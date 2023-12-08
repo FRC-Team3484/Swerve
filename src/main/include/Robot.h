@@ -2,14 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#pragma once
+#ifndef ROBOT_H
+#define ROBOT_H
+
+#include "OI.h"
+#include "Constants.h"
+#include "subsystems/DrivetrainSubsystem.h"
+#include "commands/TeleopDriveCommand.h"
 
 #include <optional>
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
-
-#include "RobotContainer.h"
+#include <frc2/command/CommandScheduler.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -26,9 +31,11 @@ class Robot : public frc::TimedRobot {
   void SimulationPeriodic() override;
 
  private:
-  // Have it empty by default so that if testing teleop it
-  // doesn't have undefined behavior and potentially crash.
-  std::optional<frc2::CommandPtr> m_autonomousCommand;
+ OI _oi{};
 
-  RobotContainer m_container;
+ DrivetrainSubsystem _drivetrain_subsystem{};
+
+ TeleopDriveCommand _drivetrain_command{&_drivetrain_subsystem, &_oi};
 };
+
+#endif
