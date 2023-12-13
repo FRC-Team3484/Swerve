@@ -6,10 +6,9 @@ SwerveModule::SwerveModule(const int module_location)
     :_drive_motor(DRIVE_MOTOR_PORTS[module_location]),
      _steer_motor(STEER_MOTOR_PORTS[module_location]),
      _steer_encoder(ENCODER_PORTS[module_location])
-     {
+{
     _drive_motor.ConfigFactoryDefault();
     _drive_motor.SetNeutralMode(motorcontrol::Coast);
-    _drive_motor.SetInverted(DRIVE_MOTOR_REVERSED[module_location]);
     ResetEncoder();
 
     _steer_motor.ConfigFactoryDefault();

@@ -36,9 +36,7 @@ namespace DrivetrainConstants {
     constexpr int DRIVE_MOTOR_PORTS[] = {0, 1, 2, 3};
     constexpr int STEER_MOTOR_PORTS[] = {4, 5, 6, 7};
     constexpr int ENCODER_PORTS[] = {8, 9, 10, 11};
-    constexpr int GYRO_PORT = 0;
 
-    constexpr bool DRIVE_MOTOR_REVERSED[] = {false, false, false, false};
     constexpr bool STEER_MOTOR_REVERSED[] = {false, false, false, false};
     constexpr bool ENCODER_REVERSED[] = {false, false, false, false};
 

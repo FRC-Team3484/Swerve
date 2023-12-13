@@ -7,6 +7,7 @@
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 
+#include <AHRS.h>
 #include <ctre/Phoenix.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc/geometry/Pose2d.h>
@@ -18,7 +19,7 @@ class DrivetrainSubsystem : public frc2::SubsystemBase {
     public:
         DrivetrainSubsystem();
         void Periodic() override;
-        void Drive(units::meters_per_second_t x_speed, units::meters_per_second_t y_speed, units::meters_per_second_t rotation, bool open_loop = false);
+        void Drive(units::meters_per_second_t x_speed, units::meters_per_second_t y_speed, units::radians_per_second_t rotation, bool open_loop = false);
         void SetModuleStates(wpi::array<frc::SwerveModuleState, 4> desired_states, bool open_loop =false);
         void ResetEncoders();
         units::degree_t GetHeading();
@@ -41,7 +42,8 @@ class DrivetrainSubsystem : public frc2::SubsystemBase {
             SwerveModule{BL},
             SwerveModule{BR}
         };
-        PigeonIMU _gyro{DrivetrainConstants::GYRO_PORT};
+        //PigeonIMU _gyro{DrivetrainConstants::GYRO_PORT};
+        AHRS* _gyro;
 
         frc::SwerveDriveOdometry<4> _odometry;
 };

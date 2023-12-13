@@ -16,6 +16,7 @@
 #include <frc/controller/simpleMotorFeedforward.h>
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/SwerveModulePosition.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 class SwerveModule {
     public:

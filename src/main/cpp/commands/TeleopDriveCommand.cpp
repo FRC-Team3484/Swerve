@@ -16,7 +16,7 @@ void TeleopDriveCommand::Execute() {
 
     const units::meters_per_second_t x_speed = -_oi->GetLeftY() * MAX_LINEAR_SPEED;
     const units::meters_per_second_t y_speed = -_oi->GetLeftX() * MAX_LINEAR_SPEED;
-    const units::meters_per_second_t rotation = -_oi->GetRightX() * MAX_ROTATION_SPEED;
+    const units::radians_per_second_t rotation = -_oi->GetRightX() * MAX_ROTATION_SPEED;
 
     _drivetrian_subsystem->Drive(x_speed, y_speed, rotation, true);
 }

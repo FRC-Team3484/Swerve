@@ -4,11 +4,14 @@ using namespace DrivetrainConstants;
 
 DrivetrainSubsystem::DrivetrainSubsystem()
     :_odometry{kinematics, GetHeading(), {_modules[FL].GetPosition(), _modules[FR].GetPosition(), _modules[BL].GetPosition(), _modules[BR].GetPosition()}}
-    {}
+    {
+        _gyro = new AHRS{frc::SPI::Port::kMXP};
+    }
 void DrivetrainSubsystem::Periodic() {
     _odometry.Update(GetHeading(), {_modules[FL].GetPosition(), _modules[FR].GetPosition(), _modules[BL].GetPosition(), _modules[BR].GetPosition()});
+    frc::SmartDashboard::PutNumber("gyro", GetHeading().value());
 }
-void DrivetrainSubsystem::Drive(units::meters_per_second_t x_speed, units::meters_per_second_t y_speed, units::meters_per_second_t rotation, bool open_loop = false) {
+void DrivetrainSubsystem::Drive(units::meters_per_second_t x_speed, units::meters_per_second_t y_speed, units::radians_per_second_t rotation, bool open_loop) {
     auto states = kinematics.ToSwerveModuleStates(frc::ChassisSpeeds::FromFieldRelativeSpeeds(x_speed, y_speed, rotation, GetHeading()));
 
     SetModuleStates(states, open_loop);
@@ -27,20 +30,20 @@ void DrivetrainSubsystem::ResetEncoders() {
     _modules[FR].ResetEncoder();
     _modules[BL].ResetEncoder();
     _modules[BR].ResetEncoder();
+    ResetOdometry(GetPose());
 }
 
-units::degree_t DrivetrainSubsystem:: GetHeading(){
-    return units::degree_t{_gyro.GetYaw()};
+units::degree_t DrivetrainSubsystem::GetHeading(){
+    return units::degree_t{_gyro->GetAngle()};
 }
 
 void DrivetrainSubsystem::ZeroHeading() {
-    _gyro.SetYaw(0);
+    _gyro->ZeroYaw();
+    ResetOdometry(GetPose());
 }
 
 units::degrees_per_second_t DrivetrainSubsystem::GetTurnRate() {
-    double xyz_dps[3];
-    _gyro.GetRawGyro(xyz_dps);
-    return units::degrees_per_second_t{xyz_dps[2]};
+    return units::degrees_per_second_t{_gyro->GetRate()};
 }
 
 frc::Pose2d DrivetrainSubsystem::GetPose() {
