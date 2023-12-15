@@ -3,9 +3,10 @@
 using namespace DrivetrainConstants;
 
 DrivetrainSubsystem::DrivetrainSubsystem()
-    :_odometry{kinematics, GetHeading(), {_modules[FL].GetPosition(), _modules[FR].GetPosition(), _modules[BL].GetPosition(), _modules[BR].GetPosition()}}
+    :_odometry{kinematics, 0_deg, {_modules[FL].GetPosition(), _modules[FR].GetPosition(), _modules[BL].GetPosition(), _modules[BR].GetPosition()}}
     {
         _gyro = new AHRS{frc::SPI::Port::kMXP};
+        ZeroHeading();
     }
 void DrivetrainSubsystem::Periodic() {
     _odometry.Update(GetHeading(), {_modules[FL].GetPosition(), _modules[FR].GetPosition(), _modules[BL].GetPosition(), _modules[BR].GetPosition()});
@@ -34,16 +35,26 @@ void DrivetrainSubsystem::ResetEncoders() {
 }
 
 units::degree_t DrivetrainSubsystem::GetHeading(){
-    return units::degree_t{_gyro->GetAngle()};
+    if (_gyro != NULL) {
+        return units::degree_t{-_gyro->GetAngle()};
+    }
+
+    return 0_deg;
+    
 }
 
 void DrivetrainSubsystem::ZeroHeading() {
-    _gyro->ZeroYaw();
+    if (_gyro != NULL) {
+        _gyro->ZeroYaw();
+    }
     ResetOdometry(GetPose());
 }
 
 units::degrees_per_second_t DrivetrainSubsystem::GetTurnRate() {
-    return units::degrees_per_second_t{_gyro->GetRate()};
+    if (_gyro != NULL) {
+        return units::degrees_per_second_t{-_gyro->GetRate()};
+    }
+    return 0_deg_per_s;
 }
 
 frc::Pose2d DrivetrainSubsystem::GetPose() {

@@ -12,7 +12,7 @@ SwerveModule::SwerveModule(const int module_location)
     ResetEncoder();
 
     _steer_motor.ConfigFactoryDefault();
-    _steer_motor.SetNeutralMode(motorcontrol::Brake);
+    _steer_motor.SetNeutralMode(motorcontrol::Coast);
     _steer_motor.SetInverted(STEER_MOTOR_REVERSED[module_location]);
     
     _steer_encoder.ConfigFactoryDefault();
@@ -30,17 +30,17 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState& state, bool ope
 
     frc::SwerveModuleState optimized_state = frc::SwerveModuleState::Optimize(state, encoder_rotation);
 
-    optimized_state.speed *= (state.angle - encoder_rotation).Cos();
+    optimized_state.speed *= (optimized_state.angle - encoder_rotation).Cos();
 
     if (open_loop) {
-        _drive_motor.Set(ControlMode::PercentOutput, optimized_state.speed / MAX_LINEAR_SPEED);
+        _drive_motor.Set(ControlMode::PercentOutput, 0.3* optimized_state.speed / MAX_LINEAR_SPEED);
     } else {
         const units::volt_t drive_output = units::volt_t{_drive_pid_controller.Calculate(units::meters_per_second_t{_GetWheelSpeed()}.value(), optimized_state.speed.value())};
         const units::volt_t drive_feed_forward = _dirve_feed_forward.Calculate(optimized_state.speed);
         _drive_motor.SetVoltage(drive_output + drive_feed_forward);
     }
 
-    const double steer_output = _steer_pid_controller.Calculate(_GetSteerAngle(), state.angle.Radians());
+    const double steer_output = _steer_pid_controller.Calculate(_GetSteerAngle(), optimized_state.angle.Radians());
     _steer_motor.Set(ControlMode::PercentOutput, steer_output);
 }
 

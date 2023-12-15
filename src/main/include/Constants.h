@@ -33,14 +33,14 @@ namespace DrivetrainConstants {
     #define BL 2
     #define BR 3
 
-    constexpr int DRIVE_MOTOR_PORTS[] = {0, 1, 2, 3};
-    constexpr int STEER_MOTOR_PORTS[] = {4, 5, 6, 7};
-    constexpr int ENCODER_PORTS[] = {8, 9, 10, 11};
+    constexpr int DRIVE_MOTOR_PORTS[] = {9, 1, 4, 5}; //9, 1, 4, 5
+    constexpr int STEER_MOTOR_PORTS[] = {8, 3, 2, 0}; //8, 3, 2, 0
+    constexpr int ENCODER_PORTS[] = {2, 3, 0, 1};
 
     constexpr bool STEER_MOTOR_REVERSED[] = {false, false, false, false};
     constexpr bool ENCODER_REVERSED[] = {false, false, false, false};
 
-    constexpr double ENCODER_OFFSET[] = {0.0, 0.0, 0.0, 0.0};
+    constexpr double ENCODER_OFFSET[] = {4.394, 71.630, -26.103, -71.455};
 
     constexpr units::inch_t DRIVETRAIN_WIDTH = 25_in;
     constexpr units::inch_t DRIVETRAIN_LENGTH = 25_in;
@@ -60,11 +60,11 @@ namespace DrivePIDConstants {
     constexpr double D = 0.0;
 }
 namespace SteerPIDConstants {
-    constexpr double P = 1.0;
+    constexpr double P = 0.5;
     constexpr double I = 0.0;
     constexpr double D = 0.0;
-    constexpr units::radians_per_second_t MAX_SPEED = 3_rad_per_s;
-    constexpr units::radians_per_second_squared_t MAX_ACCELRATION  = 6_rad_per_s_sq;
+    constexpr units::radians_per_second_t MAX_SPEED = 12_rad_per_s;
+    constexpr units::radians_per_second_squared_t MAX_ACCELRATION  = 100_rad_per_s_sq;
 }
 namespace DriveFeedForwardConstants {
     constexpr units::volt_t S = 1.0_V;
