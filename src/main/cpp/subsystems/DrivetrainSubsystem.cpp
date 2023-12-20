@@ -3,13 +3,13 @@
 using namespace DrivetrainConstants;
 
 DrivetrainSubsystem::DrivetrainSubsystem()
-    :_odometry{kinematics, 0_deg, {_modules[FL].GetPosition(), _modules[FR].GetPosition(), _modules[BL].GetPosition(), _modules[BR].GetPosition()}}
+    :_odometry{kinematics, 0_deg, GetModulePositions()}
     {
         _gyro = new AHRS{frc::SPI::Port::kMXP};
         ZeroHeading();
     }
 void DrivetrainSubsystem::Periodic() {
-    _odometry.Update(GetHeading(), {_modules[FL].GetPosition(), _modules[FR].GetPosition(), _modules[BL].GetPosition(), _modules[BR].GetPosition()});
+    _odometry.Update(GetHeading(), GetModulePositions());
     frc::SmartDashboard::PutNumber("gyro", GetHeading().value());
 }
 void DrivetrainSubsystem::Drive(units::meters_per_second_t x_speed, units::meters_per_second_t y_speed, units::radians_per_second_t rotation, bool open_loop) {
@@ -62,9 +62,14 @@ frc::Pose2d DrivetrainSubsystem::GetPose() {
 }
 
 void DrivetrainSubsystem::ResetOdometry(frc::Pose2d pose) {
-    _odometry.ResetPosition(GetHeading(),
-    {_modules[FL].GetPosition(), _modules[FR].GetPosition(), _modules[BL].GetPosition(), _modules[BR].GetPosition()}, pose);
+    _odometry.ResetPosition(GetHeading(), GetModulePositions(), pose);
 }
 
+wpi::array<frc::SwerveModulePosition, 4> DrivetrainSubsystem::GetModulePositions() {
+    return {_modules[FL].GetPosition(), _modules[FR].GetPosition(), _modules[BL].GetPosition(), _modules[BR].GetPosition()} ;
+}
 
+frc::ChassisSpeeds DrivetrainSubsystem::GetChassisSpeeds() {
+    return kinematics.ToChassisSpeeds({_modules[FL].GetState(), _modules[FR].GetState(), _modules[BL].GetState(), _modules[BR].GetState()});
+}
 

@@ -27,6 +27,8 @@ class DrivetrainSubsystem : public frc2::SubsystemBase {
         units::degrees_per_second_t GetTurnRate();
         frc::Pose2d GetPose();
         void ResetOdometry(frc::Pose2d pose);
+        wpi::array<frc::SwerveModulePosition, 4> GetModulePositions();
+        frc::ChassisSpeeds GetChassisSpeeds();
 
         frc::SwerveDriveKinematics<4> kinematics{
             frc::Translation2d{DrivetrainConstants::DRIVETRAIN_LENGTH/2, DrivetrainConstants::DRIVETRAIN_WIDTH/2},
