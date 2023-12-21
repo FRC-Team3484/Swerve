@@ -54,8 +54,8 @@ namespace DrivetrainConstants {
     constexpr units::feet_per_second_squared_t MAX_LINEAR_ACCELERATION = 4_fps_sq;
     constexpr units::radians_per_second_t MAX_ROTATION_SPEED = 5.431_rad_per_s;
     constexpr units::radians_per_second_squared_t MAX_ROTATION_ACCELRATION = 2_rad_per_s_sq;
-    constexpr units::inch_t POSITION_TOLERANCE;
-    constexpr units::degree_t ANGLE_TOLERANCE;
+    constexpr units::inch_t POSITION_TOLERANCE = 2_in;
+    constexpr units::degree_t ANGLE_TOLERANCE = 2_deg;
 }
 
 namespace DrivePIDConstants {

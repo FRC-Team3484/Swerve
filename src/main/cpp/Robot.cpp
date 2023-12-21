@@ -34,13 +34,15 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
- 
+  _auton_command.Schedule(); 
 
 }
 
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
+  if( _auton_command.IsScheduled())
+    _auton_command.Cancel();
   _drivetrain_command.Schedule();
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to

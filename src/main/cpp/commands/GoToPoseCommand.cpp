@@ -38,10 +38,12 @@ void GoToPoseCommand::Execute() {
 	frc::TrapezoidProfile<units::radians> rotation_profile = TrapezoidProfile<radians>{_rotation_constraints, target_rotation_state, current_rotation_state};
 
 	const radians_per_second_t rotation_velocity = rotation_profile.Calculate(20_ms).velocity;
+
+	_drivetrain->Drive(x_velocity, y_velocity,rotation_velocity, false);
 }
 
 void GoToPoseCommand::End(bool Iterrupted) {
-	_drivetrain->Drive(0_mps, 0_mps, 0_rad_per_s,false);
+	_drivetrain->Drive(0_mps, 0_mps, 0_rad_per_s, true);
 }
 
 bool GoToPoseCommand::IsFinished(){

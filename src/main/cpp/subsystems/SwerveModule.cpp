@@ -23,6 +23,8 @@ SwerveModule::SwerveModule(const int module_location)
     _steer_encoder.ConfigSensorDirection(ENCODER_REVERSED[module_location]);
 
     _steer_pid_controller.EnableContinuousInput(-180_deg, 180_deg);
+
+    SetDesiredState({0_mps, GetState().angle}, true);
 }
 
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState& state, bool open_loop) {
@@ -57,11 +59,11 @@ frc::SwerveModulePosition SwerveModule::GetPosition() {
 }
 
 units::feet_per_second_t SwerveModule::_GetWheelSpeed() {
-    return WHEEL_RADIUS * units::radians_per_second_t{units::degrees_per_second_t{_drive_motor.GetSelectedSensorVelocity() * 10 / DRIVE_GEAR_RATIO}}/ 1_rad;
+    return WHEEL_RADIUS * units::radians_per_second_t{_drive_motor.GetSelectedSensorVelocity() * 10 * 360.0_deg_per_s / DRIVE_TICKS_PER_REVOLUTION / DRIVE_GEAR_RATIO}/ 1_rad;
 }
 
 units::inch_t SwerveModule::_GetWheelPosition() {
-    return WHEEL_RADIUS * units::radian_t{units::degree_t{_drive_motor.GetSelectedSensorPosition() / DRIVE_GEAR_RATIO}} / 1_rad;
+    return WHEEL_RADIUS * units::radian_t{_drive_motor.GetSelectedSensorPosition() * 360.0_deg / DRIVE_TICKS_PER_REVOLUTION / DRIVE_GEAR_RATIO} / 1_rad;
 }
 
 units::degree_t SwerveModule::_GetSteerAngle() {
