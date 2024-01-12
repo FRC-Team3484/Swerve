@@ -1,4 +1,5 @@
 #include "subsystems/DrivetrainSubsystem.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 
 using namespace DrivetrainConstants;
 
@@ -7,10 +8,17 @@ DrivetrainSubsystem::DrivetrainSubsystem()
     {
         _gyro = new AHRS{frc::SPI::Port::kMXP};
         ZeroHeading();
+        ResetOdometry({0_m, 0_m, 0_deg});
     }
 void DrivetrainSubsystem::Periodic() {
     _odometry.Update(GetHeading(), GetModulePositions());
     frc::SmartDashboard::PutNumber("gyro", GetHeading().value());
+    frc::SmartDashboard::PutNumber("Pose X", GetPose().X().value());
+    frc::SmartDashboard::PutNumber("Pose Y", GetPose().Y().value());
+    frc::SmartDashboard::PutNumber("FL Angle PV", GetModulePositions()[FL].angle.Degrees().value());
+    frc::SmartDashboard::PutNumber("FR Angle PV", GetModulePositions()[FR].angle.Degrees().value());
+    frc::SmartDashboard::PutNumber("BL Angle PV", GetModulePositions()[BL].angle.Degrees().value());
+    frc::SmartDashboard::PutNumber("BR Angle PV", GetModulePositions()[BR].angle.Degrees().value());
 }
 void DrivetrainSubsystem::Drive(units::meters_per_second_t x_speed, units::meters_per_second_t y_speed, units::radians_per_second_t rotation, bool open_loop) {
     auto states = kinematics.ToSwerveModuleStates(frc::ChassisSpeeds::FromFieldRelativeSpeeds(x_speed, y_speed, rotation, GetHeading()));
@@ -20,6 +28,14 @@ void DrivetrainSubsystem::Drive(units::meters_per_second_t x_speed, units::meter
 
 void DrivetrainSubsystem::SetModuleStates(wpi::array<frc::SwerveModuleState, 4> desired_states, bool open_loop) {
     kinematics.DesaturateWheelSpeeds(&desired_states, MAX_LINEAR_SPEED);
+    frc::SmartDashboard::PutNumber("FL Speed SP", desired_states[FL].speed.value());
+    frc::SmartDashboard::PutNumber("FL Angle SP", desired_states[FL].angle.Degrees().value());
+    frc::SmartDashboard::PutNumber("FR Speed SP", desired_states[FR].speed.value());
+    frc::SmartDashboard::PutNumber("FR Angle SP", desired_states[FR].angle.Degrees().value());
+    frc::SmartDashboard::PutNumber("BL Speed SP", desired_states[BL].speed.value());
+    frc::SmartDashboard::PutNumber("BL Angle SP", desired_states[BL].angle.Degrees().value());
+    frc::SmartDashboard::PutNumber("BR Speed SP", desired_states[BR].speed.value());
+    frc::SmartDashboard::PutNumber("BR Angle SP", desired_states[BR].angle.Degrees().value());
     _modules[FL].SetDesiredState(desired_states[FL], open_loop);
     _modules[FR].SetDesiredState(desired_states[FR], open_loop);
     _modules[BL].SetDesiredState(desired_states[BL], open_loop);

@@ -12,6 +12,9 @@ class OI {
         double GetLeftX();
         double GetRightX();
         double GetA();
+        bool GetYPressed();
+        bool GetBPressed();
+        bool GetXPressed();
     
     private:
     frc::XboxController _driver_controller{ControllerConstants::DRIVER_CONTROLLER_PORT};

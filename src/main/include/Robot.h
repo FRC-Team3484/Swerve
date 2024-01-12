@@ -17,6 +17,7 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/CommandScheduler.h>
 #include <frc/geometry/Pose2d.h>
+#include"frc/motorcontrol/Talon.h"
 
 
 class Robot : public frc::TimedRobot {
@@ -42,6 +43,10 @@ class Robot : public frc::TimedRobot {
  TeleopDriveCommand _drivetrain_command{&_drivetrain_subsystem, &_oi};
 
  GoToPoseCommand _auton_command{&_drivetrain_subsystem, frc::Pose2d {1_ft, 0_ft, 0_deg }};
+
+ frc::Talon Motor1{0}, Motor2{1}; // Make sure that we have the proper ports
+ //frc::XboxController XboxController{0};
+ int v = 0; 
 };
 
 #endif

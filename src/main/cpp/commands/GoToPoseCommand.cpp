@@ -1,4 +1,5 @@
 #include "commands/GoToPoseCommands.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 
 using namespace frc;
 using namespace units;
@@ -8,9 +9,13 @@ GoToPoseCommand::GoToPoseCommand(DrivetrainSubsystem* drivetrain, frc::Pose2d ta
 	: _drivetrain{drivetrain}, _target_pose{target}{
 	AddRequirements(_drivetrain);
 	}
-void GoToPoseCommand::Initialize() {};
+void GoToPoseCommand::Initialize() 
+{
+	frc::SmartDashboard::PutString("Auton State", "Initialized");
+};
 
 void GoToPoseCommand::Execute() {
+	frc::SmartDashboard::PutString("Auton State", "Executing");
 	_pose_delta = _target_pose.RelativeTo(_drivetrain->GetPose());
 	
 	const frc::ChassisSpeeds chassis_speeds = _drivetrain->GetChassisSpeeds();
@@ -39,15 +44,17 @@ void GoToPoseCommand::Execute() {
 
 	const radians_per_second_t rotation_velocity = rotation_profile.Calculate(20_ms).velocity;
 
-	_drivetrain->Drive(x_velocity, y_velocity,rotation_velocity, false);
+	_drivetrain->Drive(x_velocity, y_velocity, rotation_velocity, false);
 }
 
 void GoToPoseCommand::End(bool Iterrupted) {
+	frc::SmartDashboard::PutString("Auton State", "Finished");
 	_drivetrain->Drive(0_mps, 0_mps, 0_rad_per_s, true);
 }
 
 bool GoToPoseCommand::IsFinished(){
-	return _pose_delta.Translation().Norm() <= POSITION_TOLERANCE && units::math::abs(_pose_delta.Rotation().Radians())<= ANGLE_TOLERANCE;
+	return (_pose_delta.Translation().Norm() <= POSITION_TOLERANCE)
+		 && (units::math::abs(_pose_delta.Rotation().Radians()) <= ANGLE_TOLERANCE);
 }
 
 
